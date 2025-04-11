@@ -29,14 +29,18 @@ const games = createRouter()
       'query',
       z.object({
         search: z.string().optional(),
-        page: z.number().optional(),
-        pageSize: z.number().optional().default(20),
+        page: z.coerce.number().optional(),
+        pageSize: z.coerce.number().optional().default(20),
         userId: z.string().optional(),
-        sort: z.string().optional().default('desc'),
+        sortBy: z
+          .enum(['title', 'popularity', 'createdAt'])
+          .default('createdAt'),
+        sortDir: z.enum(['asc', 'desc']).optional().default('desc'),
       })
     ),
     async (c) => {
-      const { search, page, pageSize, userId, sort } = c.req.valid('query');
+      const { search, page, pageSize, userId, sortBy, sortDir } =
+        c.req.valid('query');
 
       const data = await db.game.findMany({
         where: {
@@ -56,7 +60,9 @@ const games = createRouter()
           }),
         },
         orderBy: {
-          createdAt: sort === 'desc' ? 'desc' : 'asc',
+          ...((sortBy === 'title' || sortBy === 'createdAt') && {
+            [sortBy]: sortDir === 'desc' ? 'desc' : 'asc',
+          }),
         },
         include: {
           gameVersion: {
@@ -97,12 +103,29 @@ const games = createRouter()
         };
       });
 
+      if (sortBy === 'popularity') {
+        formattedData.sort((a, b) =>
+          sortDir === 'desc'
+            ? b.scoreCount - a.scoreCount
+            : a.scoreCount - b.scoreCount
+        );
+      }
+
       const totalGames = await db.game.count();
 
+      const totalPage = Math.ceil(totalGames / pageSize) || 1;
+      const isFirstPage = ((page ?? 0) - 1) * pageSize <= totalGames;
       const isLastPage = ((page ?? 0) + 1) * pageSize >= totalGames;
 
       return c.json(
-        { data: formattedData, page, isLastPage, pageSize },
+        {
+          data: formattedData,
+          page: typeof page === 'number' ? page : 0,
+          isLastPage,
+          isFirstPage,
+          pageSize,
+          totalPage,
+        },
         HTTPStatusCodes.OK
       );
     }
@@ -263,6 +286,9 @@ const games = createRouter()
       'json',
       ScoreSchema.extend({
         score: z.number().min(1),
+      }).pick({
+        score: true,
+        gameVersionId: true,
       })
     ),
     async (c) => {
@@ -289,12 +315,12 @@ const games = createRouter()
           HTTPStatusCodes.NOT_FOUND
         );
 
-      const data = await c.req.json();
+      const data = c.req.valid('json');
 
       const score = await db.score.create({
         data: {
           score: data.score,
-          gameVersionId: game.gameVersion[0].id,
+          gameVersionId: data.gameVersionId,
           userId: user.id,
         },
       });
