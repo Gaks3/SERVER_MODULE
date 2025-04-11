@@ -53,8 +53,8 @@ export default function PaginationGames({
     <Pagination>
       <PaginationContent>
         {!isFirstPage ? (
-          <PaginationItem aria-disabled>
-            <PaginationPrevious onClick={() => onPage(page - 1)} />
+          <PaginationItem>
+            <PaginationPrevious href={buildLink(page - 1)} />
           </PaginationItem>
         ) : (
           <Button disabled variant={'ghost'}>
@@ -65,20 +65,22 @@ export default function PaginationGames({
         {page - 1 !== 0 ||
           (page !== 0 && (
             <PaginationItem>
-              <PaginationLink href='#'>{page}</PaginationLink>
+              <PaginationLink href={buildLink(page - 1)}>{page}</PaginationLink>
             </PaginationItem>
           ))}
         <PaginationItem>
           <PaginationLink
             isActive={page === Number(searchParams.get('page'))}
-            href={`?page=${page}`}
+            href={`${buildLink(page)}`}
           >
             {page + 1}
           </PaginationLink>
         </PaginationItem>
         {!(page + 1 >= totalPage) && (
           <PaginationItem>
-            <PaginationLink href=''>{page + 2}</PaginationLink>
+            <PaginationLink href={buildLink(page + 1)}>
+              {page + 2}
+            </PaginationLink>
           </PaginationItem>
         )}
         {page + 2 <= totalPage && (
@@ -86,14 +88,14 @@ export default function PaginationGames({
             <PaginationEllipsis />
           </PaginationItem>
         )}
-        {!isFirstPage ? (
-          <PaginationItem aria-disabled>
-            <PaginationNext onClick={() => onPage(page + 1)} />
+        {!isLastPage ? (
+          <PaginationItem>
+            <PaginationNext href={buildLink(page + 1)} />
           </PaginationItem>
         ) : (
           <Button disabled variant={'ghost'}>
             <ChevronRightIcon />
-            <span className='hidden sm:block'>Previous</span>
+            <span className='hidden sm:block'>Next</span>
           </Button>
         )}
       </PaginationContent>
