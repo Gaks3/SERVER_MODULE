@@ -5,7 +5,6 @@ import { notFound, onError } from 'stoker/middlewares';
 import { cors } from 'hono/cors';
 
 import { sessionMiddleware } from '../middlewares/session.js';
-import { apiKeyMiddleware } from '../middlewares/api-key.js';
 import type { AppBindings } from './types.js';
 
 export function createRouter() {
@@ -23,8 +22,7 @@ export default function createApp() {
         credentials: true,
       })
     )
-    .use(sessionMiddleware())
-    .use(apiKeyMiddleware());
+    .use(sessionMiddleware());
 
   app.notFound(notFound);
   app.onError(onError);
