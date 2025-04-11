@@ -1,0 +1,45 @@
+model Game {
+    id          String    @id @default(uuid())
+    title       String
+    slug        String    @unique
+    description String    @db.Text
+    image       String
+    userId      String
+    user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+    createdAt   DateTime  @default(now())
+    updatedAt   DateTime  @updatedAt
+    deletedAt   DateTime?
+
+    gameVersion GameVersion[]
+
+    @@map("game")
+}
+
+model GameVersion {
+    id        String    @id @default(uuid())
+    version   String
+    path      String
+    gameId    String
+    game      Game      @relation(fields: [gameId], references: [id], onDelete: Cascade)
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    deletedAt DateTime?
+
+    score Score[]
+
+    @@unique([version, gameId])
+    @@map("game_version")
+}
+
+model Score {
+    id            Int         @id @default(autoincrement())
+    userId        String
+    user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+    gameVersionId String
+    game          GameVersion @relation(fields: [gameVersionId], references: [id], onDelete: Cascade)
+    score         Int
+    createdAt     DateTime    @default(now())
+    updatedAt     DateTime    @updatedAt
+
+    @@map("scores")
+}
