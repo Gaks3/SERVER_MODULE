@@ -65,7 +65,7 @@ export default function UserUnbanDialog({
         <DialogHeader>
           <DialogTitle>Unban User: {user.name}</DialogTitle>
           <DialogDescription>
-            This action will restore the user's access to the platform.
+            This action will restore the user&apos;s access to the platform.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
