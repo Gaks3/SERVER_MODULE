@@ -1,6 +1,6 @@
 import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
-import { admin, createAuthMiddleware, username } from 'better-auth/plugins';
+import { admin, createAuthMiddleware, openAPI } from 'better-auth/plugins';
 
 import db from './db.js';
 
@@ -19,21 +19,18 @@ export const auth = betterAuth({
         type: 'string',
       },
     },
+    deleteUser: {
+      enabled: true,
+    },
   },
-  plugins: [
-    admin(),
-    username({
-      minUsernameLength: 4,
-      maxUsernameLength: 60,
-    }),
-  ],
+  plugins: [admin(), openAPI()],
   trustedOrigins: ['http://localhost:3000'],
   hooks: {
     after: createAuthMiddleware(async (ctx) => {
       if (ctx.path.startsWith('/sign-in')) {
         const newSession = ctx.context.newSession;
 
-        if (newSession)
+        if (newSession) {
           await db.user.update({
             where: {
               id: newSession.user.id,
@@ -42,6 +39,7 @@ export const auth = betterAuth({
               lastLoginAt: new Date(),
             },
           });
+        }
       }
     }),
   },
