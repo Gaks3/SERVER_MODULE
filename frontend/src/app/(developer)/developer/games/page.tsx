@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/card';
 import { apiClient } from '@/lib/api';
 import { authClient } from '@/lib/auth-client';
+import { SortDirEnum } from '@/lib/types';
 import { UsersIcon } from 'lucide-react';
 import { headers } from 'next/headers';
 import Image from 'next/image';
@@ -34,7 +35,7 @@ export default async function GamesPage({
       query: {
         userId: session.data!.user.id,
         search,
-        sortDir,
+        sortDir: sortDir as SortDirEnum | undefined,
       },
     },
     {
