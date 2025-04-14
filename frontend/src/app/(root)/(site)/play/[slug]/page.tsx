@@ -1,12 +1,12 @@
 import GameContainer from '@/components/game-container';
 import GameShareButton from '@/components/game-share-button';
 import Leaderboard from '@/components/leaderboard';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { apiClient } from '@/lib/api';
+import { authClient } from '@/lib/auth-client';
 import { formatDate } from 'date-fns';
-import { ClockIcon, FileCodeIcon, UserIcon } from 'lucide-react';
+import { ClockIcon, FileCodeIcon } from 'lucide-react';
 import { headers } from 'next/headers';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
@@ -37,13 +37,25 @@ export default async function GamePage({
 
   if (gameData.gameVersion.length === 0) return notFound();
 
+  const session = await authClient.getSession({
+    fetchOptions: {
+      headers: await headers(),
+    },
+  });
+
+  const user = session.data!.user;
+
   return (
     <div className='grid grid-cols-1 md:grid-cols-3 gap-6 p-4'>
       <div className='md:col-span-2'>
         <GameContainer game={gameData} />
       </div>
       <div>
-        <Leaderboard scores={gameData.gameVersion[0].score} />
+        <Leaderboard
+          scores={gameData.gameVersion[0].score}
+          user={user}
+          slug={slug}
+        />
       </div>
       <Card className='md:col-span-2'>
         <CardContent>
@@ -104,34 +116,6 @@ export default async function GamePage({
                       {gameData.gameVersion.length > 2 ? 's' : ''}
                     </p>
                   )}
-                </div>
-              </div>
-            </div>
-            <div className='space-y-2'>
-              <div className='flex items-center gap-2'>
-                <UserIcon className='h-5 w-5 text-purple-500' />
-                <h4 className='font-medium'>Developer</h4>
-              </div>
-
-              <div className='p-3 border rounded-lg'>
-                <div className='flex items-center gap-3'>
-                  <Avatar className='h-10 w-10'>
-                    <AvatarImage
-                      src={gameData.user.image || ''}
-                      alt={gameData.user.name}
-                    />
-                    <AvatarFallback>
-                      {gameData.user.name.substring(0, 2).toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <p className='font-medium'>{gameData.user.name}</p>
-                    <div className='flex items-center gap-2'>
-                      <Badge variant='outline' className='capitalize text-xs'>
-                        {gameData.user.role}
-                      </Badge>
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>

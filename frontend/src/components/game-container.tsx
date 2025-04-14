@@ -91,6 +91,8 @@ export default function GameContainer({ game }: { game: Game }) {
         );
       }
     });
+
+    // eslint-disable-next-line
   }, []);
 
   return (
