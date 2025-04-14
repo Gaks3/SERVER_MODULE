@@ -41,7 +41,7 @@ export default function GameShareButton({ game }: { game: Game }) {
   const shareToSocial = (platform: string) => {
     let shareUrl = '';
     const encodedUrl = encodeURIComponent(gameShareUrl);
-    const encodedTitle = encodeURIComponent(`Play ${game.name} on PlayX!`);
+    const encodedTitle = encodeURIComponent(`Play ${game.title} on PlayX!`);
     const encodedDescription = encodeURIComponent(
       game.description.substring(0, 100) + '...'
     );
