@@ -5,6 +5,7 @@ import SortDirGames from '@/components/sort-dir-games';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { apiClient } from '@/lib/api';
+import { ListParamsSchema } from '@/lib/schema/game-schema';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -13,7 +14,8 @@ export default async function Home({
 }: {
   searchParams: Promise<{ [key: string]: string | undefined }>;
 }) {
-  const { search, sortBy, sortDir, page, pageSize } = await searchParams;
+  const { search, sortBy, sortDir, page, pageSize } =
+    (await searchParams) as unknown as ListParamsSchema;
 
   const games = await apiClient.api.games.$get({
     query: {

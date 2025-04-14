@@ -1,6 +1,6 @@
 'use client';
 
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { useCallback } from 'react';
 import {
   Pagination,
@@ -16,7 +16,6 @@ import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
 
 export default function PaginationGames({
   page = 0,
-  pageSize,
   totalPage,
   isFirstPage,
   isLastPage,
@@ -27,7 +26,6 @@ export default function PaginationGames({
   isFirstPage: boolean;
   isLastPage: boolean;
 }) {
-  const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
@@ -43,11 +41,11 @@ export default function PaginationGames({
     [searchParams, pathname]
   );
 
-  const onPage = (value: number) => {
-    const link = buildLink(value);
+  // const onPage = (value: number) => {
+  //   const link = buildLink(value);
 
-    return router.replace(link);
-  };
+  //   return router.replace(link);
+  // };
 
   return (
     <Pagination>
