@@ -1,11 +1,6 @@
 'use client';
 
-import {
-  BellIcon,
-  CreditCardIcon,
-  LayoutDashboardIcon,
-  LogOutIcon,
-} from 'lucide-react';
+import { LayoutDashboardIcon, LogOutIcon, UserCircleIcon } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import {
   DropdownMenu,
@@ -74,6 +69,12 @@ export default function HeaderUser({
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
+          <DropdownMenuItem asChild>
+            <Link href={'/account'}>
+              <UserCircleIcon />
+              Account
+            </Link>
+          </DropdownMenuItem>
           {user.role !== RoleEnum.USER && (
             <DropdownMenuItem asChild>
               <Link
