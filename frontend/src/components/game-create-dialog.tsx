@@ -29,6 +29,7 @@ import {
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
 import { useRef, useState } from 'react';
+import Image from 'next/image';
 
 export const createGameSchema = z.object({
   title: z.string().trim().min(1, 'The title field is required'),
@@ -211,7 +212,7 @@ export default function GameCreateDialog() {
                     ) : (
                       <div className='relative'>
                         <div className='aspect-square w-full overflow-hidden rounded-lg'>
-                          <img
+                          <Image
                             src={
                               imagePreview ||
                               '/placeholder.svg?height=350&width=350'

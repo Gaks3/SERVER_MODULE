@@ -29,6 +29,7 @@ import {
 } from './ui/form';
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
+import Image from 'next/image';
 
 const updateGameSchema = createGameSchema.partial();
 
@@ -215,7 +216,7 @@ export default function GameUpdateDialog({
                     ) : (
                       <div className='relative'>
                         <div className='aspect-square w-full overflow-hidden rounded-lg'>
-                          <img
+                          <Image
                             src={imagePreview}
                             alt='Game cover preview'
                             className='w-full h-full object-cover'
