@@ -9,7 +9,6 @@ import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 
 import { cn } from '@/lib/utils';
-import { passwordSchema } from '@/lib/schema/password-schema';
 import { authClient } from '@/lib/auth-client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
